@@ -1,5 +1,5 @@
 {
-  "name": "LingoClone",
+  "name": "DuolingoClone",
   "description": "An AI-powered language learning application inspired by Duolingo. Features dynamic lesson generation, interactive challenges, and gamified progress tracking.",
   "requestFramePermissions": []
 }

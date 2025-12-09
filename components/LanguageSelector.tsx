@@ -13,6 +13,8 @@ const LANGUAGES: Language[] = [
   { id: 'it', name: 'Italian', flag: '🇮🇹', code: 'Italian' },
   { id: 'jp', name: 'Japanese', flag: '🇯🇵', code: 'Japanese' },
   { id: 'cn', name: 'Chinese', flag: '🇨🇳', code: 'Mandarin Chinese' },
+  { id: 'da', name: 'Danish', flag: '🇩🇰', code: 'Danish' },
+  { id: 'bn', name: 'Bengali', flag: '🇧🇩', code: 'Bengali' },
 ];
 
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ onSelect }) => {

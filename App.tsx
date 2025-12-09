@@ -4,7 +4,7 @@ import { LanguageSelector } from './components/LanguageSelector';
 import { LessonPath } from './components/LessonPath';
 import { LessonRunner } from './components/LessonRunner';
 import { generateLessonContent } from './services/gemini';
-import { Button } from './components/ui/Button'; // Assuming we move Button to ui folder or root components
+import { Button } from './components/Button'; 
 
 // Minimal reusable loading spinner
 const LoadingScreen: React.FC<{ message: string }> = ({ message }) => (
@@ -49,6 +49,12 @@ export default function App() {
     setAppState(AppState.MAP);
   };
 
+  const handleChangeLanguage = () => {
+    // Keep XP and hearts, but reset current language to allow selection
+    setProgress(prev => ({ ...prev, currentLanguage: null }));
+    setAppState(AppState.WELCOME);
+  };
+
   const handleStartLesson = async (topic: string, level: number) => {
     if (!progress.currentLanguage) return;
     
@@ -91,6 +97,7 @@ export default function App() {
           <LessonPath 
             progress={progress} 
             onStartLesson={handleStartLesson} 
+            onChangeLanguage={handleChangeLanguage}
           />
         );
         

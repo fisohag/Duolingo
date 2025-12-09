@@ -4,6 +4,7 @@ import { UserProgress } from '../types';
 interface LessonPathProps {
   progress: UserProgress;
   onStartLesson: (topic: string, level: number) => void;
+  onChangeLanguage: () => void;
 }
 
 const TOPICS = [
@@ -16,13 +17,19 @@ const TOPICS = [
   { id: 'people', title: 'People', icon: '👤', level: 2 },
 ];
 
-export const LessonPath: React.FC<LessonPathProps> = ({ progress, onStartLesson }) => {
+export const LessonPath: React.FC<LessonPathProps> = ({ progress, onStartLesson, onChangeLanguage }) => {
   return (
     <div className="pb-24 max-w-md mx-auto">
       {/* Header */}
       <header className="sticky top-0 bg-white border-b-2 border-gray-200 z-10 p-4 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-           <span className="text-2xl">{progress.currentLanguage?.flag}</span>
+        <div className="flex items-center">
+           <button 
+             onClick={onChangeLanguage}
+             className="flex items-center space-x-2 px-2 py-1 rounded-xl hover:bg-gray-100 border-2 border-transparent hover:border-gray-200 transition-all group"
+           >
+             <span className="text-2xl">{progress.currentLanguage?.flag}</span>
+             <span className="text-xs font-extrabold text-gray-400 group-hover:text-gray-600 uppercase tracking-wide">Change</span>
+           </button>
         </div>
         <div className="flex items-center space-x-4">
           <div className="flex items-center text-red-500 font-bold">

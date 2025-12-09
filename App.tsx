@@ -22,7 +22,16 @@ const INITIAL_PROGRESS: UserProgress = {
   currentLanguage: null
 };
 
-export default function App() {
+export default function App() 
+{
+  // ... COMMENT OUT API LOGIC HERE ...
+  return (
+    <div style={{ backgroundColor: 'red', height: '100px', padding: '20px' }}>
+      <h1>Hello, Vercel Success!</h1> 
+    </div>
+  );
+}
+{
   const [appState, setAppState] = useState<AppState>(AppState.WELCOME);
   const [progress, setProgress] = useState<UserProgress>(INITIAL_PROGRESS);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);

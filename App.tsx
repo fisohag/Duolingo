@@ -4,7 +4,7 @@ import { LanguageSelector } from './components/LanguageSelector';
 import { LessonPath } from './components/LessonPath';
 import { LessonRunner } from './components/LessonRunner';
 import { generateLessonContent } from './services/gemini';
-import { Button } from './components/Button'; // Make sure this path is correct
+import { Button } from './components/Button'; 
 
 // Minimal reusable loading spinner
 const LoadingScreen: React.FC<{ message: string }> = ({ message }) => (
@@ -31,7 +31,7 @@ export default function App() {
   useEffect(() => {
     const saved = localStorage.getItem('lingoclone_progress');
     if (saved) {
-      const parsed: UserProgress = JSON.parse(saved);
+      const parsed = JSON.parse(saved);
       if (parsed.currentLanguage) {
         setProgress(parsed);
         setAppState(AppState.MAP);
@@ -50,13 +50,14 @@ export default function App() {
   };
 
   const handleChangeLanguage = () => {
+    // Keep XP and hearts, but reset current language to allow selection
     setProgress(prev => ({ ...prev, currentLanguage: null }));
     setAppState(AppState.WELCOME);
   };
 
   const handleStartLesson = async (topic: string, level: number) => {
     if (!progress.currentLanguage) return;
-
+    
     setAppState(AppState.LESSON_LOADING);
     try {
       const lesson = await generateLessonContent(
@@ -69,19 +70,20 @@ export default function App() {
     } catch (error) {
       console.error(error);
       setAppState(AppState.ERROR);
+      // Fallback or alert
       setTimeout(() => setAppState(AppState.MAP), 2000);
     }
   };
 
   const handleLessonComplete = (xpEarned: number) => {
     if (!activeLesson) return;
-
+    
     setProgress(prev => ({
       ...prev,
       xp: prev.xp + xpEarned,
-      completedLessons: [...prev.completedLessons, activeLesson.topic]
+      completedLessons: [...prev.completedLessons, activeLesson.topic] // Simple logic using topic as ID for now
     }));
-
+    
     setAppState(AppState.LESSON_COMPLETE);
   };
 
@@ -89,64 +91,63 @@ export default function App() {
     switch (appState) {
       case AppState.WELCOME:
         return <LanguageSelector onSelect={handleLanguageSelect} />;
-
+        
       case AppState.MAP:
         return (
-          <LessonPath
-            progress={progress}
-            onStartLesson={handleStartLesson}
+          <LessonPath 
+            progress={progress} 
+            onStartLesson={handleStartLesson} 
             onChangeLanguage={handleChangeLanguage}
           />
         );
-
+        
       case AppState.LESSON_LOADING:
         return <LoadingScreen message="Creating your lesson with AI..." />;
-
+        
       case AppState.LESSON_ACTIVE:
-        return activeLesson ? (
-          <LessonRunner
-            lesson={activeLesson}
+        if (!activeLesson) return null;
+        return (
+          <LessonRunner 
+            lesson={activeLesson} 
             onComplete={handleLessonComplete}
             onExit={() => setAppState(AppState.MAP)}
           />
-        ) : null;
-
+        );
+        
       case AppState.LESSON_COMPLETE:
         return (
           <div className="fixed inset-0 bg-[#ffc800] z-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in zoom-in duration-300">
-            <div className="text-8xl mb-6">👑</div>
-            <h2 className="text-4xl font-extrabold text-white mb-2">Lesson Complete!</h2>
-            <div className="flex space-x-4 mb-8">
-              <div className="bg-yellow-600 bg-opacity-30 rounded-xl p-4 min-w-[100px]">
-                <div className="text-yellow-100 font-bold uppercase text-sm">XP Earned</div>
-                <div className="text-3xl font-bold text-white">+10</div>
-              </div>
-            </div>
-            <button
-              onClick={() => setAppState(AppState.MAP)}
-              className="bg-white text-[#ffc800] w-full py-4 rounded-2xl font-extrabold text-xl uppercase tracking-widest shadow-lg active:scale-95 transition-transform"
-            >
-              Continue
-            </button>
+             <div className="text-8xl mb-6">👑</div>
+             <h2 className="text-4xl font-extrabold text-white mb-2">Lesson Complete!</h2>
+             <div className="flex space-x-4 mb-8">
+                <div className="bg-yellow-600 bg-opacity-30 rounded-xl p-4 min-w-[100px]">
+                    <div className="text-yellow-100 font-bold uppercase text-sm">XP Earned</div>
+                    <div className="text-3xl font-bold text-white">+10</div>
+                </div>
+             </div>
+             <button 
+               onClick={() => setAppState(AppState.MAP)}
+               className="bg-white text-[#ffc800] w-full py-4 rounded-2xl font-extrabold text-xl uppercase tracking-widest shadow-lg active:scale-95 transition-transform"
+             >
+               Continue
+             </button>
           </div>
         );
 
       case AppState.ERROR:
         return (
-          <div className="fixed inset-0 bg-white flex flex-col items-center justify-center p-6">
+           <div className="fixed inset-0 bg-white flex flex-col items-center justify-center p-6">
             <h2 className="text-xl font-bold text-gray-700 mb-4">Something went wrong</h2>
-            <p className="text-gray-500 mb-6">
-              We couldn't generate the lesson. Please check your connection or API key.
-            </p>
-            <button
-              onClick={() => setAppState(AppState.MAP)}
-              className="bg-[#58cc02] text-white px-6 py-3 rounded-xl font-bold"
+            <p className="text-gray-500 mb-6">We couldn't generate the lesson. Please check your connection or API key.</p>
+            <button 
+               onClick={() => setAppState(AppState.MAP)}
+               className="bg-[#58cc02] text-white px-6 py-3 rounded-xl font-bold"
             >
-              Back to Home
+               Back to Home
             </button>
           </div>
-        );
-
+        )
+        
       default:
         return null;
     }
